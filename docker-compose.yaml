@@ -1,0 +1,25 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+    environment:
+      # Put your key in an .env file (recommended) instead of hardcoding here
+      QDRANT__SERVICE__API_KEY: "${QDRANT_API_KEY}"
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:6333/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  qdrant_storage:
